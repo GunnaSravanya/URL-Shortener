@@ -1,0 +1,19 @@
+POST http://localhost:4000/commonApi/register
+Content-Type: application/json
+
+{
+    "fName":"Sravanya",
+    "lName":"Gunna",
+    "email":"admin1@gmail.com",
+    "password":"admin123"
+}
+###
+Post http://localhost:4000/commonApi/login
+Content-Type: application/json
+
+{
+    "email":"admin123@gmail.com",
+    "password":"admin123"
+}
+###
+GET http://localhost:4000/commonApi/logout

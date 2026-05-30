@@ -1,0 +1,45 @@
+
+POST http://localhost:4000/urlApi/shorturl
+Content-Type: application/json
+
+{
+    "originalUrl":"https://google.com",
+    "expiryType":"hours",
+    "expiryValue":24,
+    "qrEnabled":true,
+    "purpose":"General",
+    "privacy":"Private"
+}
+
+###
+GET http://localhost:4000/urlApi/spotify
+
+
+###
+GET http://localhost:4000/urlApi/allurls 
+
+###
+GET http://localhost:4000/urlApi/particularUrl/6a0acc6d1ae92de5b3d35071
+
+###
+PUT http://localhost:4000/urlApi/urldetails/6a0acc6d1ae92de5b3d35071
+Content-Type: application/json
+
+{
+    "updatedOriginalUrl":"https://google.com",
+    "updatedCustomAlias":"portfoli",
+    "updatedPurpose":"Resume",
+    "updatedMaxClicks":10,
+    "updatedPrivacy":"Private",
+    "updatedQrEnabled":true,
+    "updatedExpiresAt":"2026-10-01"
+}
+
+###
+PATCH http://localhost:4000/urlApi/softdelete/6a0acc6d1ae92de5b3d35071
+
+###
+PATCH http://localhost:4000/urlApi/restore/6a0acc6d1ae92de5b3d35071
+
+###
+GET http://localhost:4000/urlApi/trash
