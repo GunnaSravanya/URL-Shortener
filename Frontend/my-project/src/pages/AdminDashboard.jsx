@@ -197,6 +197,7 @@ function AdminDashboard() {
                         </td>
                       </tr>
                     )}
+                    console.log(countryStats);
                   </tbody>
                 </table>
               </div>
