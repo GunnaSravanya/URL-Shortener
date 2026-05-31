@@ -42,7 +42,7 @@ function CreateUrl() {
       setError("");
 
       const res = await axios.post(
-        "http://localhost:4000/urlApi/shorturl",
+        "https://url-shortener-tu9a.onrender.com/urlApi/shorturl",
         urlData,
         {
           withCredentials: true,
