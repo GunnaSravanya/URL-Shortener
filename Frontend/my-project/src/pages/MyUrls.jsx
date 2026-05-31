@@ -35,7 +35,7 @@ function MyUrls() {
 
   async function fetchUrls() {
     try {
-      const res = await axios.get("http://localhost:4000/urlApi/allurls", {
+      const res = await axios.get("https://url-shortener-tu9a.onrender.com/urlApi/allurls", {
         withCredentials: true,
       });
 
@@ -66,7 +66,7 @@ function MyUrls() {
   async function handleDelete(id) {
     try {
       await axios.patch(
-        `http://localhost:4000/urlApi/softdelete/${id}`,
+        `https://url-shortener-tu9a.onrender.com/urlApi/softdelete/${id}`,
         {},
         {
           withCredentials: true,
@@ -95,7 +95,7 @@ function MyUrls() {
   async function handleRedirectCheck(shortCode) {
     try {
       const res = await axios.get(
-        `http://localhost:4000/urlApi/check/${shortCode}`,
+        `https://url-shortener-tu9a.onrender.com/urlApi/check/${shortCode}`,
         {
           withCredentials: true,
         },
@@ -109,7 +109,7 @@ function MyUrls() {
         return;
       }
 
-      window.open(`http://localhost:4000/urlApi/${shortCode}`, "_blank");
+      window.open(`https://url-shortener-tu9a.onrender.com/urlApi/${shortCode}`, "_blank");
       await fetchUrls(); 
     } catch (err) {
       setPopupMessage(err.response?.data?.message || "Error occurred");
