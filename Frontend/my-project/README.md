@@ -286,18 +286,6 @@ Displays footer section.
 
 ---
 
-# Loader Component
-
-## Purpose
-
-Displays loading animation while data is fetching.
-
-## Features
-
-* Loading spinner
-* Loading text
-
----
 
 # Popup Component
 
@@ -395,53 +383,6 @@ title
 subtitle
 dataKey
 nameKey
- 
-
----
-
-# QRCodeBox Component
-
-## Purpose
-
-Displays QR code for shortened URLs.
-
-## Package Used
-
-  
-qrcode.react
- 
-
-## Props Used
-
-  
-url
- 
-
----
-
-# Country Table Component
-
-## Purpose
-
-Displays country-wise click analytics.
-
-## Columns
-
-* Country
-* Clicks
-
----
-
-# Copy Button Component
-
-## Purpose
-
-Copies URL to clipboard.
-
-## Function Used
-
-  
-navigator.clipboard.writeText()
  
 
 ---
