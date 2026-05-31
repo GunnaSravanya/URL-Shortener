@@ -538,10 +538,13 @@ urlApp.get('/allurls',verifyToken("User"),async(req,res)=>{
   try{
     const userId=req.user.id;
     const urls=await urlModel.find({userId:userId,isDeleted:false});
-    if(urls.length==0)
-    {
-      return res.status(404).json({message:"No Urls found"})
-    }
+    if(urls.length === 0)
+{
+  return res.status(200).json({
+    message: "No URLs found",
+    url: []
+  });
+}
    const formattedUrls = urls.map((url) => ({
      id: url._id,
      purpose: url.purpose,
