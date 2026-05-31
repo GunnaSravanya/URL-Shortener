@@ -15,7 +15,7 @@ function Trash() {
   useEffect(() => {
     async function fetchTrashUrls() {
       try {
-        const res = await axios.get("http://localhost:4000/urlApi/trash", {
+        const res = await axios.get("https://url-shortener-tu9a.onrender.com/urlApi/trash", {
           withCredentials: true,
         });
 
@@ -35,7 +35,7 @@ function Trash() {
   async function handleRestore(id) {
     try {
       await axios.patch(
-        `http://localhost:4000/urlApi/restore/${id}`,
+        `https://url-shortener-tu9a.onrender.com/urlApi/restore/${id}`,
         {},
         {
           withCredentials: true,
@@ -52,7 +52,7 @@ function Trash() {
 
   async function handlePermanentDelete(id) {
     try {
-      await axios.delete(`http://localhost:4000/urlApi/permanent/${id}`, {
+      await axios.delete(`https://url-shortener-tu9a.onrender.com/urlApi/permanent/${id}`, {
         withCredentials: true,
       });
 
