@@ -37,7 +37,7 @@ function Register() {
 
     try {
       const res = await axios.post(
-        "http://localhost:4000/commonApi/register",
+        "https://url-shortener-tu9a.onrender.com/commonApi/register",
         user,
       );
 
