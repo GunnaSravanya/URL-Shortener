@@ -100,8 +100,8 @@ commonApp.post('/login',async(req,res)=>{
   );
 res.cookie("token", signedToken, {
   httpOnly: true,
-  secure:false,//chenge it to true while production
-  sameSite:"lax"
+  secure:true,//change it to true while production
+  sameSite:none
 });
   return res
     .status(200)
