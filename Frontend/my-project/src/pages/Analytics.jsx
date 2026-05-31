@@ -29,7 +29,7 @@ function Analytics() {
     async function fetchAnalytics() {
       try {
         const res = await axios.get(
-          `http://localhost:4000/urlApi/particularUrl/${id}`,
+          `https://url-shortener-tu9a.onrender.com/urlApi/particularUrl/${id}`,
           { withCredentials: true },
         );
 
@@ -96,7 +96,7 @@ function Analytics() {
   async function handleRedirectCheck(shortCode) {
     try {
       const res = await axios.get(
-        `http://localhost:4000/urlApi/check/${shortCode}`,
+        `https://url-shortener-tu9a.onrender.com/urlApi/check/${shortCode}`,
         {
           withCredentials: true,
         },
@@ -107,7 +107,7 @@ function Analytics() {
         return;
       }
 
-      window.open(`http://localhost:4000/urlApi/${shortCode}`, "_blank");
+      window.open(`https://url-shortener-tu9a.onrender.com/urlApi/${shortCode}`, "_blank");
     } catch (err) {
       alert(err.response?.data?.message || "Error occurred");
     }
