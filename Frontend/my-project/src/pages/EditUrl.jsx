@@ -35,7 +35,7 @@ function EditUrl() {
     async function fetchUrlDetails() {
       try {
         const res = await axios.get(
-          `http://localhost:4000/urlApi/particularUrl/${id}`,
+          `https://url-shortener-tu9a.onrender.com/urlApi/particularUrl/${id}`,
           {
             withCredentials: true,
           },
@@ -88,7 +88,7 @@ function EditUrl() {
       setSuccess("");
 
       await axios.put(
-        `http://localhost:4000/urlApi/urldetails/${id}`,
+        `https://url-shortener-tu9a.onrender.com/urlApi/urldetails/${id}`,
         urlData,
         {
           withCredentials: true,
