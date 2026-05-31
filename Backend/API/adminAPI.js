@@ -396,7 +396,6 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
     });
   }
 });
-});
 //------------------------------------------------------------------------------------------------------------------------
 adminApp.get("/searchusers", verifyToken("Admin"), async (req, res) => {
   try {
