@@ -9,7 +9,7 @@ function AdminSidebar() {
   //logout function
   async function handleLogout() {
     try {
-      await axios.get("http://localhost:4000/commonApi/logout", {
+      await axios.get("https://url-shortener-tu9a.onrender.com/commonApi/logout", {
         withCredentials: true,
       });
 
