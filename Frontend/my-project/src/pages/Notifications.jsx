@@ -16,7 +16,7 @@ function Notifications() {
   async function fetchNotifications() {
     try {
       const res = await axios.get(
-        "http://localhost:4000/urlApi/notifications",
+        "https://url-shortener-tu9a.onrender.com/urlApi/notifications",
         {
           withCredentials: true,
         },
