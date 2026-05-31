@@ -34,15 +34,15 @@ function Dashboard() {
 
     try {
       const [urlsRes, deviceRes, countryRes] = await Promise.all([
-        axios.get("http://localhost:4000/urlApi/allurls", {
+        axios.get("https://url-shortener-tu9a.onrender.com/urlApi/allurls", {
           withCredentials: true,
         }),
 
-        axios.get("http://localhost:4000/urlApi/analytics/device", {
+        axios.get("https://url-shortener-tu9a.onrender.com/urlApi/analytics/device", {
           withCredentials: true,
         }),
 
-        axios.get("http://localhost:4000/urlApi/analytics/country", {
+        axios.get("https://url-shortener-tu9a.onrender.com/urlApi/analytics/country", {
           withCredentials: true,
         }),
       ]);
