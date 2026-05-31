@@ -41,7 +41,7 @@ function AdminDashboard() {
       setLoading(true);
 
       const response = await axios.get(
-        "http://localhost:4000/adminApi/dashboard",
+        "https://url-shortener-tu9a.onrender.com/adminApi/dashboard",
         {
           withCredentials: true,
         },
