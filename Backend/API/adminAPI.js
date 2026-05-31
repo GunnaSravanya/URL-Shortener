@@ -324,6 +324,12 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
         },
       },
     ]);
+    const formattedCountryStats = countryStats.map(item => ({
+  country: item._id,
+  users: 0,
+  urls: 0,
+  clicks: item.clicks,
+}));
 
     /* ================= RESPONSE ================= */
 
@@ -343,7 +349,7 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
 
       deviceStats,
 
-      countryStats,
+      countryStats:formattedCountryStats,
     });
   } catch (err) {
     console.log(err)
