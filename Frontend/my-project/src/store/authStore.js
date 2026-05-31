@@ -13,7 +13,7 @@ const useAuthStore = create((set) => ({
   login: async (email, password) => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/commonApi/login",
+        "https://url-shortener-tu9a.onrender.com/commonApi/login",
         { email, password },
         { withCredentials: true },
       );
@@ -42,7 +42,7 @@ const useAuthStore = create((set) => ({
 
   logout: async () => {
     try {
-      await axios.get("http://localhost:4000/commonApi/logout", {
+      await axios.get("https://url-shortener-tu9a.onrender.com/commonApi/logout", {
         withCredentials: true,
       });
     } catch (err) {
@@ -64,7 +64,7 @@ const useAuthStore = create((set) => ({
       set({ isCheckingAuth: true });
 
       const res = await axios.get(
-        "http://localhost:4000/commonApi/check-auth",
+        "https://url-shortener-tu9a.onrender.com/commonApi/check-auth",
         { withCredentials: true },
       );
 
