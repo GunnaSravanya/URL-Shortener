@@ -28,7 +28,7 @@ function ManageUsers() {
       setLoading(true);
 
       const res = await axios.get(
-        `http://localhost:4000/adminApi/searchusers?search=${searchValue}`,
+        `https://url-shortener-tu9a.onrender.com/adminApi/searchusers?search=${searchValue}`,
         {
           withCredentials: true,
         },
@@ -57,7 +57,7 @@ function ManageUsers() {
   async function handleStatus(user) {
     try {
       await axios.patch(
-        "http://localhost:4000/adminApi/userstatus",
+        "https://url-shortener-tu9a.onrender.com/adminApi/userstatus",
         {
           userId: user.id,
           email: user.email,
