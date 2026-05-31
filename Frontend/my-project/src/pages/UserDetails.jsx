@@ -27,7 +27,7 @@ function UserDetails() {
     try {
       setLoading(true);
 
-      const res = await axios.get(`http://localhost:4000/adminApi/user/${id}`, {
+      const res = await axios.get(`https://url-shortener-tu9a.onrender.com/adminApi/user/${id}`, {
         withCredentials: true,
       });
 
@@ -49,7 +49,7 @@ function UserDetails() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:4000/adminApi/url/${urlId}`, {
+      await axios.delete(`https://url-shortener-tu9a.onrender.com/adminApi/url/${urlId}`, {
         withCredentials: true,
       });
 
