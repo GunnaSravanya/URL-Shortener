@@ -211,47 +211,39 @@ adminApp.delete('/url/:id', verifyToken('Admin'), async (req, res) => {
 });
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
-//Dashboard management
 adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
   try {
     /* ================= TOTAL USERS ================= */
-
     const totalUsers = await userModel.countDocuments({
       role: "User",
     });
 
     /* ================= TOTAL URLS ================= */
-
     const totalUrls = await urlModel.countDocuments({
       isDeleted: false,
     });
 
     /* ================= TOTAL CLICKS ================= */
-
     const totalClicks = await analyticsModel.countDocuments();
 
     /* ================= PRIVATE URLS ================= */
-
     const privateUrls = await urlModel.countDocuments({
       privacy: "Private",
       isDeleted: false,
     });
 
     /* ================= PUBLIC URLS ================= */
-
     const publicUrls = await urlModel.countDocuments({
       privacy: "Public",
       isDeleted: false,
     });
 
     /* ================= QR GENERATED ================= */
-
-   const qrGenerated = await urlModel.countDocuments({
-     qrEnabled: true,
-   });
+    const qrGenerated = await urlModel.countDocuments({
+      qrEnabled: true,
+    });
 
     /* ================= MONTHLY URLS ================= */
-
     const monthlyData = await urlModel.aggregate([
       {
         $group: {
@@ -259,26 +251,13 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
           urls: { $sum: 1 },
         },
       },
-
-      {
-        $sort: { _id: 1 },
-      },
+      { $sort: { _id: 1 } },
     ]);
 
     const months = [
       "",
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
     ];
 
     const monthlyUrls = monthlyData.map((item) => ({
@@ -287,7 +266,6 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
     }));
 
     /* ================= DEVICE STATS ================= */
-
     const deviceData = await analyticsModel.aggregate([
       {
         $group: {
@@ -301,38 +279,99 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
       name: item._id || "Unknown",
       value: item.value,
     }));
-    /*==================Country Stats==================*/
-    const countryStats = await analyticsModel.aggregate([
+
+    /* ================= COUNTRY - CLICKS ================= */
+    const countryClicks = await analyticsModel.aggregate([
       {
         $match: {
-          country: {
-            $nin: [null, "", "Unknown", undefined],
-          },
+          country: { $nin: [null, "", "Unknown", undefined] },
         },
       },
-
       {
         $group: {
           _id: "$country",
           clicks: { $sum: 1 },
         },
       },
-
       {
-        $sort: {
-          clicks: -1,
+        $sort: { clicks: -1 },
+      },
+    ]);
+
+    /* ================= COUNTRY - USERS ================= */
+    const countryUsers = await userModel.aggregate([
+      {
+        $match: {
+          country: { $nin: [null, "", "Unknown", undefined] },
+          role: "User",
+        },
+      },
+      {
+        $group: {
+          _id: "$country",
+          users: { $sum: 1 },
         },
       },
     ]);
-    const formattedCountryStats = countryStats.map(item => ({
-  country: item._id,
-  users: 0,
-  urls: 0,
-  clicks: item.clicks,
-}));
+
+    /* ================= COUNTRY - URLS ================= */
+    const countryUrls = await urlModel.aggregate([
+      {
+        $match: {
+          country: { $nin: [null, "", "Unknown", undefined] },
+          isDeleted: false,
+        },
+      },
+      {
+        $group: {
+          _id: "$country",
+          urls: { $sum: 1 },
+        },
+      },
+    ]);
+
+    /* ================= MERGE ALL COUNTRY DATA ================= */
+    const map = new Map();
+
+    // clicks
+    countryClicks.forEach((item) => {
+      map.set(item._id, {
+        country: item._id,
+        users: 0,
+        urls: 0,
+        clicks: item.clicks,
+      });
+    });
+
+    // users
+    countryUsers.forEach((item) => {
+      if (!map.has(item._id)) {
+        map.set(item._id, {
+          country: item._id,
+          users: 0,
+          urls: 0,
+          clicks: 0,
+        });
+      }
+      map.get(item._id).users = item.users;
+    });
+
+    // urls
+    countryUrls.forEach((item) => {
+      if (!map.has(item._id)) {
+        map.set(item._id, {
+          country: item._id,
+          users: 0,
+          urls: 0,
+          clicks: 0,
+        });
+      }
+      map.get(item._id).urls = item.urls;
+    });
+
+    const formattedCountryStats = Array.from(map.values());
 
     /* ================= RESPONSE ================= */
-
     return res.status(200).json({
       message: "Dashboard statistics fetched successfully",
 
@@ -346,13 +385,12 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
       },
 
       monthlyUrls,
-
       deviceStats,
-
-      countryStats:formattedCountryStats,
+      countryStats: formattedCountryStats,
     });
+
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return res.status(500).json({
       error: err.message,
     });
