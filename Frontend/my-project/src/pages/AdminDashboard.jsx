@@ -70,6 +70,8 @@ function AdminDashboard() {
     } finally {
       setLoading(false);
     }
+    console.log(response.data.countryStats);
+setCountryStats(response.data.countryStats);
   };
 
   /* ================= USE EFFECT (AUTO REFRESH) ================= */
@@ -197,7 +199,6 @@ function AdminDashboard() {
                         </td>
                       </tr>
                     )}
-                    console.log(countryStats);
                   </tbody>
                 </table>
               </div>
