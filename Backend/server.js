@@ -15,7 +15,7 @@ app.use(exp.json());
 //cors(cross origin resources sharing) to connect backend and frontend which running on two different ports
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://url-shortener-nu-six-27.vercel.app",
     credentials: true,
   }),
 );
