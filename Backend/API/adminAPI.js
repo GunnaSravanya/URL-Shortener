@@ -213,33 +213,97 @@ adminApp.delete('/url/:id', verifyToken('Admin'), async (req, res) => {
 //----------------------------------------------------------------------------------------------------
 adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
   try {
-    /* ================= TOTALS ================= */
-    const totalUsers = await userModel.countDocuments({ role: "User" });
+    /* ================= TOTAL USERS ================= */
+    const totalUsers = await userModel.countDocuments({
+      role: "User",
+    });
 
-    const totalUrls = await urlModel.countDocuments({ isDeleted: false });
+    /* ================= TOTAL URLS ================= */
+    const totalUrls = await urlModel.countDocuments({
+      isDeleted: false,
+    });
 
+    /* ================= TOTAL CLICKS ================= */
     const totalClicks = await analyticsModel.countDocuments();
 
+    /* ================= PRIVATE URLS ================= */
     const privateUrls = await urlModel.countDocuments({
       privacy: "Private",
       isDeleted: false,
     });
 
+    /* ================= PUBLIC URLS ================= */
     const publicUrls = await urlModel.countDocuments({
       privacy: "Public",
       isDeleted: false,
     });
 
+    /* ================= QR GENERATED ================= */
     const qrGenerated = await urlModel.countDocuments({
       qrEnabled: true,
     });
 
-    /* ================= USERS BY COUNTRY ================= */
-    const userCountryStats = await userModel.aggregate([
+    /* ================= MONTHLY URLS ================= */
+    const monthlyData = await urlModel.aggregate([
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          urls: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const months = [
+      "",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    ];
+
+    const monthlyUrls = monthlyData.map((item) => ({
+      month: months[item._id],
+      urls: item.urls,
+    }));
+
+    /* ================= DEVICE STATS ================= */
+    const deviceData = await analyticsModel.aggregate([
+      {
+        $group: {
+          _id: "$device",
+          value: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const deviceStats = deviceData.map((item) => ({
+      name: item._id || "Unknown",
+      value: item.value,
+    }));
+
+    /* ================= COUNTRY - CLICKS ================= */
+    const countryClicks = await analyticsModel.aggregate([
       {
         $match: {
+          country: { $nin: [null, "", "Unknown", undefined] },
+        },
+      },
+      {
+        $group: {
+          _id: "$country",
+          clicks: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { clicks: -1 },
+      },
+    ]);
+
+    /* ================= COUNTRY - USERS ================= */
+    const countryUsers = await userModel.aggregate([
+      {
+        $match: {
+          country: { $nin: [null, "", "Unknown", undefined] },
           role: "User",
-          country: { $nin: [null, "", "Unknown"] },
         },
       },
       {
@@ -250,12 +314,12 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
       },
     ]);
 
-    /* ================= URLS BY COUNTRY ================= */
-    const urlCountryStats = await urlModel.aggregate([
+    /* ================= COUNTRY - URLS ================= */
+    const countryUrls = await urlModel.aggregate([
       {
         $match: {
+          country: { $nin: [null, "", "Unknown", undefined] },
           isDeleted: false,
-          country: { $nin: [null, "", "Unknown"] },
         },
       },
       {
@@ -266,56 +330,46 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
       },
     ]);
 
-    /* ================= CLICKS BY COUNTRY ================= */
-    const clickCountryStats = await analyticsModel.aggregate([
-      {
-        $match: {
-          country: { $nin: [null, "", "Unknown"] },
-        },
-      },
-      {
-        $group: {
-          _id: "$country",
-          clicks: { $sum: 1 },
-        },
-      },
-    ]);
-
-    /* ================= MERGE ALL ================= */
+    /* ================= MERGE ALL COUNTRY DATA ================= */
     const map = new Map();
 
-    // helper function
-    const ensure = (country) => {
-      if (!map.has(country)) {
-        map.set(country, {
-          country,
+    // clicks
+    countryClicks.forEach((item) => {
+      map.set(item._id, {
+        country: item._id,
+        users: 0,
+        urls: 0,
+        clicks: item.clicks,
+      });
+    });
+
+    // users
+    countryUsers.forEach((item) => {
+      if (!map.has(item._id)) {
+        map.set(item._id, {
+          country: item._id,
           users: 0,
           urls: 0,
           clicks: 0,
         });
       }
-      return map.get(country);
-    };
-
-    // USERS
-    userCountryStats.forEach((item) => {
-      const c = item._id;
-      ensure(c).users = item.users;
+      map.get(item._id).users = item.users;
     });
 
-    // URLS
-    urlCountryStats.forEach((item) => {
-      const c = item._id;
-      ensure(c).urls = item.urls;
+    // urls
+    countryUrls.forEach((item) => {
+      if (!map.has(item._id)) {
+        map.set(item._id, {
+          country: item._id,
+          users: 0,
+          urls: 0,
+          clicks: 0,
+        });
+      }
+      map.get(item._id).urls = item.urls;
     });
 
-    // CLICKS
-    clickCountryStats.forEach((item) => {
-      const c = item._id;
-      ensure(c).clicks = item.clicks;
-    });
-
-    const countryStats = Array.from(map.values());
+    const formattedCountryStats = Array.from(map.values());
 
     /* ================= RESPONSE ================= */
     return res.status(200).json({
@@ -330,7 +384,9 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
         qrGenerated,
       },
 
-      countryStats,
+      monthlyUrls,
+      deviceStats,
+      countryStats: formattedCountryStats,
     });
 
   } catch (err) {
@@ -339,6 +395,7 @@ adminApp.get("/dashboard", verifyToken("Admin"), async (req, res) => {
       error: err.message,
     });
   }
+});
 });
 //------------------------------------------------------------------------------------------------------------------------
 adminApp.get("/searchusers", verifyToken("Admin"), async (req, res) => {
