@@ -64,15 +64,16 @@ urlApp.post('/shorturl',verifyToken("User"),async (req, res) => {
         shortCode = Math.random().toString(36).substring(2, 8);
       } while (await urlModel.findOne({ shortCode }));
     }
-    /* ================= GET IP ================= */
+   //get ip address and location
+    const forwarded = req.headers["x-forwarded-for"];
 
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+const ip = forwarded
+  ? forwarded.split(",")[0].trim()
+  : req.socket.remoteAddress;
 
-    /* ================= GET COUNTRY ================= */
+const geo = geoip.lookup(ip);
 
-    const geo = geoip.lookup(ip);
-
-    const country = geo?.country || "India";
+const country = geo?.country || "Unknown";
     //store short url in database
     const newUrl = new urlModel({
       shortCode,
