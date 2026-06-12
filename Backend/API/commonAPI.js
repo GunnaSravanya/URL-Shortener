@@ -42,7 +42,8 @@ commonApp.post('/register',async(req,res)=>{
     try {
       const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
       const geo = geoip.lookup(ip);
-
+      console.log(ip)
+      console.log(geo)
       country = geo?.country || "Unknown";
     } catch (err) {
       console.log("Geo error:", err.message);
