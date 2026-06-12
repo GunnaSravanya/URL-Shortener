@@ -47,6 +47,7 @@ commonApp.post('/register',async(req,res)=>{
     } catch (err) {
       console.log("Geo error:", err.message);
     }
+    newUser.country = country;
     //save the document into the database
     let newUserdoc = new userModel(newUser);
     console.log(7);
