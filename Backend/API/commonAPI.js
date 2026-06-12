@@ -40,11 +40,19 @@ commonApp.post('/register',async(req,res)=>{
     let country = "Unknown";
 
     try {
-      const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-      const geo = geoip.lookup(ip);
-      console.log(ip)
-      console.log(geo)
-      country = geo?.country || "Unknown";
+      const forwarded = req.headers["x-forwarded-for"];
+
+const ip = forwarded
+  ? forwarded.split(",")[0].trim()
+  : req.socket.remoteAddress;
+
+console.log("IP:", ip);
+
+const geo = geoip.lookup(ip);
+
+console.log("Geo:", geo);
+
+country = geo?.country || "Unknown";
     } catch (err) {
       console.log("Geo error:", err.message);
     }
